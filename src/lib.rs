@@ -1,5 +1,6 @@
 use std::ops::Range;
 
+
 macro_rules! impl_range {
     ($($t: ty)*) => {
         $(
@@ -17,6 +18,8 @@ macro_rules! impl_range {
         )*
     };
 }
+impl_range!(i8 i16 i32 i64 i128 isize f32 f64);
+
 
 #[macro_export]
 macro_rules! from_range {
@@ -28,7 +31,21 @@ macro_rules! from_range {
     }
 }
 
-impl_range!(i8 i16 i32 i64 i128 isize f32 f64);
+
+#[macro_export]
+macro_rules! range {
+    ($end: expr) => {
+        ..end
+    };
+    ($start: expr, $end: expr) => {
+        crate::ERange::from($start..$end)        
+    };
+    ($start: expr, $end: expr, $step: expr) => {
+        crate::ERange::new($start, $end, $step)
+    }
+}
+
+
 
 pub struct ERange<T> 
     where T: core::ops::Add<Output = T> + PartialEq + PartialOrd + Clone + Copy
@@ -105,5 +122,15 @@ mod tests {
     fn it_works() {
         let result: Vec<i32> = from_range!(5..1).collect();
         assert_eq!(vec![5, 4, 3, 2], result);
+    }
+    #[test]
+    fn it_works_2() {
+        let result: Vec<i32> = range!(5, 1).collect();
+        assert_eq!(vec![5, 4, 3, 2], result);
+    }
+    #[test]
+    fn it_works_3() {
+        let result: Vec<i32> = range!(5, 1, -2).collect();
+        assert_eq!(vec![5, 3], result);
     }
 }
