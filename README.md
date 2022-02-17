@@ -1,1 +1,1 @@
-This little crate is aimed to provide QoL functionality for using range-like types for iterators.
+This little crate is aimed to provide QoL functionality for using range-like types for iterators. In particular, it offers macros and types that can generate iterators similar to the range functions in languages such as Python and Wolfram.
