@@ -20,6 +20,34 @@ macro_rules! impl_range {
 }
 impl_range!(i8 i16 i32 i64 i128 isize f32 f64);
 
+enum IterAB<T, A, B> 
+    where A: Iterator<Item = T>, B: DoubleEndedIterator<Item = T>
+{
+    IterA(A),
+    IterB(B),
+}
+
+impl<T, A, B> Iterator for IterAB<T, A, B> 
+    where A: Iterator<Item = T>, B: DoubleEndedIterator<Item = T>
+{
+    type Item = T;
+    fn next(&mut self) -> Option<Self::Item> {
+        match self {
+            IterAB::IterA(iter_a) => iter_a.next(),
+            IterAB::IterB(iter_b) => iter_b.next(),
+        }
+    }
+}
+
+macro_rules! range_int {
+    ($start: expr, $end: expr) => {
+        if $start <= $end {
+            crate::IterAB::IterA($start..$end)
+        } else {
+            crate::IterAB::IterB((($end + 1)..($start + 1)).rev())
+        }
+    };
+}
 
 #[macro_export]
 macro_rules! from_range {
@@ -132,5 +160,15 @@ mod tests {
     fn it_works_3() {
         let result: Vec<i32> = range!(5, 1, -2).collect();
         assert_eq!(vec![5, 3], result);
+    }
+    #[test]
+    fn it_works_4() {
+        let result: Vec<i32> = range_int!(1, 5).collect();
+        assert_eq!(vec![1,2,3,4], result);
+    }
+    #[test]
+    fn it_works_5() {
+        let result: Vec<i32> = range_int!(5, 1).collect();
+        assert_eq!(vec![5,4,3,2], result);
     }
 }
