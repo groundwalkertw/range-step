@@ -31,7 +31,7 @@ macro_rules! from_range {
 impl_range!(i8 i16 i32 i64 i128 isize f32 f64);
 
 pub struct ERange<T> 
-    where T: std::ops::Add<Output = T> + PartialEq + PartialOrd + Clone + Copy
+    where T: core::ops::Add<Output = T> + PartialEq + PartialOrd + Clone + Copy
 {   
     end: T,
     step: T,
@@ -45,7 +45,7 @@ enum Direction {
 }
 
 impl<T> ERange<T> 
-    where T: std::ops::Add<Output = T> + PartialEq + PartialOrd + Clone + Copy
+    where T: core::ops::Add<Output = T> + PartialEq + PartialOrd + Clone + Copy
 {   
     #[inline]
     fn new(start: T, end: T, step: T) -> Self {
